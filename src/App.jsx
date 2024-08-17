@@ -1,19 +1,21 @@
-import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
-  return (
-    <Auth0Provider
-      domain={import.meta.env.VITE_DOMAIN_URL}
-      clientId={import.meta.env.VITE_CLIENT_ID}
-      authorizationParams={{
-        redirect_uri: import.meta.env.VITE_AUTHORIZATIONPARAMS_URL,
-      }}
-    >
-      <LoginButton />
-      <br />
-      <LogoutButton />
-    </Auth0Provider>
-  );
+  const { isAuthenticated, user } = useAuth0();
+
+  if (isAuthenticated) {
+    return (
+      <div>
+        Hello {user.name}{" "}
+        <button onClick={() => logout({ returnTo: window.location.origin })}>
+          Log out
+        </button>
+        <pre>{JSON.stringify(user, null, 2)}</pre>
+      </div>
+    );
+  }
+
+  return <LoginButton />;
 }
 
 function LoginButton() {
@@ -28,22 +30,6 @@ function LoginButton() {
   return (
     <div>
       <button onClick={handleLogin}>Log in with Google</button>
-    </div>
-  );
-}
-
-function LogoutButton() {
-  const { logout } = useAuth0();
-
-  const handleLogout = () => {
-    logout({
-      returnTo: "http://localhost:5500", // ログアウト後にリダイレクトするURLを指定
-    });
-  };
-
-  return (
-    <div>
-      <button onClick={handleLogout}>Log out</button>
     </div>
   );
 }
