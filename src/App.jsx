@@ -2,8 +2,14 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Card from "./components/Card";
 import { useState } from "react";
 import TestLayout from "./page/TestLayout";
+import { supabase } from "./utils/supabase";
 
 function App() {
+  supabase.auth.getSession().then((session) => {
+    // supabaseで認証ができれば、そのsupabaseでアクセスできる。
+    console.log(session.data.session.user.id);
+  });
+
   const [pageNo, setPageNo] = useState(0);
 
   switch (pageNo) {
@@ -43,6 +49,7 @@ function App() {
         <div>
           <button onClick={() => setPageNo(2)}>レイアウトの実験</button>
         </div>
+        <div></div>
       </div>
     );
   }
